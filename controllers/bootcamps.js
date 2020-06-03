@@ -3,31 +3,43 @@ const ErrorResponse = require('../utilis/errorResponse');
 const geocoder = require('../utilis/geocoder');
 const asyncHandler = require('../middleware/async');
 
-//@description    Get all bootcamps
-//@route    GET /api/v1/bootcamps
-//@access   Public
+// @desc      Get all bootcamps
+// @route     GET /api/v1/bootcamps
+// @access    Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamps = await Bootcamp.find();
+  let query;
+
+  let queryStr = JSON.stringify(req.query);
+
+  queryStr = queryStr.replace(
+    /\b(gt|gte|lt|lte|in)\b/g,
+    (match) => `$${match}`
+  );
+
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  const bootcamps = await query;
+
   res
     .status(200)
     .json({ success: true, count: bootcamps.length, data: bootcamps });
 });
 
-//@description    Get a bootcamp
-//@route    GET /api/v1/bootcamps/:id
-//@access   Public
+// @desc      Get single bootcamp
+// @route     GET /api/v1/bootcamps/:id
+// @access    Public
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
-    return new ErrorResponse(
-      `Bootcamp not found with id of ${req.params.id}`,
-      404
+    return next(
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
 
   res.status(200).json({ success: true, data: bootcamp });
 });
+
 //@description    Create new bootcamp
 //@route    POST /api/v1/bootcamps
 //@access   Public
