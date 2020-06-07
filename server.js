@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
+const mongoSanitize = require('express-mongo-sanitize');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/errors');
@@ -30,6 +31,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 //Body parser
 app.use(express.json());
+
+//Sanitize Data
+app.use(mongoSanitize());
 
 // Cookie parser
 app.use(cookieParser());
