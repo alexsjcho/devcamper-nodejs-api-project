@@ -11,6 +11,7 @@ const advancedResults = require('../middleware/advancedResults');
 
 //Routes import
 const router = express.Router({ mergeParams: true });
+
 const { protect, authorize } = require('../middleware/auth');
 
 //Route methods
