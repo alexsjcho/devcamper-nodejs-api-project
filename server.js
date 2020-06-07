@@ -3,6 +3,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
+const helmet = require('helmet');
+const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
@@ -34,6 +36,12 @@ app.use(express.json());
 
 //Sanitize Data
 app.use(mongoSanitize());
+
+//Prevent XSS attacks
+app.use(xss());
+
+//Set secruity headers
+app.use(helmet());
 
 // Cookie parser
 app.use(cookieParser());
